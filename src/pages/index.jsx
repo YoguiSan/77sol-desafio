@@ -8,6 +8,7 @@ import {
   Image,
   Accordion,
   Input,
+  Card,
 } from 'pure-ui-react';
 
 import { environment } from '../Config';
@@ -17,6 +18,7 @@ import SimuladorService from '../services/simulador';
 import Container from './Styles';
 import AppContext from '../utils/Contexts';
 import { Colors } from '../assets/json';
+import { replaceSpecialCharacters } from 'formatadores';
 
 function IndexPage() {
   const {
@@ -111,6 +113,8 @@ function IndexPage() {
       const {
         kit,
         parcelamento,
+        economia,
+        potencial,
       } = result;
 
       kit.forEach(({
@@ -124,7 +128,7 @@ function IndexPage() {
           <Column
             extraSmall={12}
             medium={4}
-            large={2}
+            large={3}
           >
             <Image
               src={urlImagem}
@@ -178,6 +182,15 @@ function IndexPage() {
 
       setResultados(
         <Grid>
+          <Row>
+            <Column extraSmall={12}>
+              <Title
+                type="h3"
+                text={`Potencial: ${potencial}`}
+                classes={[replaceSpecialCharacters(potencial).toLowerCase()]}
+              />
+            </Column>
+          </Row>
           <Row>
             <Accordion
               title="Instalação e suporte"
@@ -236,10 +249,8 @@ function IndexPage() {
             ? (
               <Row>
                 <Column extraSmall={12}>
-                  <Title
-                    type="h3"
-                    text={`Valor total do projeto: ${valorTotal}`}
-                    color={Colors.main}
+                  <Card
+                    title={`Valor total do projeto: ${valorTotal}`}
                   />
                 </Column>
               </Row>

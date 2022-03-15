@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { TopMenu, Loader, Message } from 'pure-ui-react';
+import {
+  TopMenu, Loader, Message, Grid, Row, Column,
+} from 'pure-ui-react';
 import { arrayOf, element } from 'prop-types';
 
 import AppContext from '../../utils/Contexts';
@@ -21,35 +23,41 @@ function Layout({ children }) {
   }), []);
 
   return (
-    <AppContext.Provider
-      key="appcontext-provider"
-      value={value}
-    >
-      <Loader
-        open={loading}
-        icon={icon}
-      />
-      <Message
-        text={messageText}
-        type={messageType}
-        timeout={messageTimeout}
-      />
-      <TopMenu
-        menuBorderBottom="none"
-        menuItems={{
-          Visitar: 'https://www.77sol.com.br/',
-        }}
-        menuItemWidth={10}
-        unit="rem"
-        background={Colors.main}
-        menuDropdownBackground="white"
-        menuItemBackground="none"
-        menuItemColor="white"
-        menuItemColorHover="black"
-        menuItemBackgroundHover="#E8EDFE"
-      />
-      {children}
-    </AppContext.Provider>
+    <Grid>
+      <Row>
+        <Column large={8}>
+          <AppContext.Provider
+            key="appcontext-provider"
+            value={value}
+          >
+            <Loader
+              open={loading}
+              icon={icon}
+            />
+            <Message
+              text={messageText}
+              type={messageType}
+              timeout={messageTimeout}
+            />
+            <TopMenu
+              menuBorderBottom="none"
+              menuItems={{
+                Visitar: 'https://www.77sol.com.br/',
+              }}
+              menuItemWidth={10}
+              unit="rem"
+              background={Colors.main}
+              menuDropdownBackground="white"
+              menuItemBackground="none"
+              menuItemColor="white"
+              menuItemColorHover="black"
+              menuItemBackgroundHover="#E8EDFE"
+            />
+            {children}
+          </AppContext.Provider>
+        </Column>
+      </Row>
+    </Grid>
   );
 }
 
