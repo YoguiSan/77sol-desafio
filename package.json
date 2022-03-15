@@ -1,0 +1,42 @@
+{
+  "name": "77sol-desafio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "77sol-desafio",
+  "keywords": [
+    "gatsby"
+  ],
+  "scripts": {
+    "develop": "gatsby develop",
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "push": "git add . && git cz && git push"
+  },
+  "dependencies": {
+    "babel-plugin-styled-components": "^2.0.6",
+    "commitizen": "^4.2.4",
+    "formatadores": "^1.5.3",
+    "gatsby": "^4.9.3",
+    "gatsby-plugin-styled-components": "^5.9.0",
+    "pure-ui-react": "^1.0.30",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "styled-components": "^5.3.3"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.3.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
