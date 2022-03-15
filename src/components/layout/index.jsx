@@ -4,6 +4,7 @@ import { arrayOf, element } from 'prop-types';
 
 import AppContext from '../../utils/Contexts';
 
+import { Colors } from '../../assets/json';
 import icon from '../../assets/images/Spin-1s-200px.gif';
 
 function Layout({ children }) {
@@ -33,7 +34,20 @@ function Layout({ children }) {
         type={messageType}
         timeout={messageTimeout}
       />
-      <TopMenu />
+      <TopMenu
+        menuBorderBottom="none"
+        menuItems={{
+          Visitar: 'https://www.77sol.com.br/',
+        }}
+        menuItemWidth={10}
+        unit="rem"
+        background={Colors.main}
+        menuDropdownBackground="white"
+        menuItemBackground="none"
+        menuItemColor="white"
+        menuItemColorHover="black"
+        menuItemBackgroundHover="#E8EDFE"
+      />
       {children}
     </AppContext.Provider>
   );

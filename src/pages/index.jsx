@@ -5,6 +5,9 @@ import {
   Column,
   Form,
   Title,
+  Image,
+  Accordion,
+  Input,
 } from 'pure-ui-react';
 
 import { environment } from '../Config';
@@ -13,6 +16,7 @@ import SimuladorService from '../services/simulador';
 
 import Container from './Styles';
 import AppContext from '../utils/Contexts';
+import { Colors } from '../assets/json';
 
 function IndexPage() {
   const {
@@ -26,6 +30,8 @@ function IndexPage() {
   const [tipoEstrutura, setTipoEstrutura] = useState(null);
   const [valorConta, setValorConta] = useState();
   const [resultados, setResultados] = useState();
+  const [parcelamentoSelecionado, setParcelamentoSelecionado] = useState(0);
+  const [valorTotal, setValorTotal] = useState();
 
   const inputs = [{
     name: 'cep',
@@ -77,6 +83,10 @@ function IndexPage() {
   }];
 
   const submit = async () => {
+    const equipamentos = [];
+
+    const opcoesParcelas = [];
+
     setLoading(true);
 
     const result = await SimuladorService.consultar(cep, valorConta, tipoEstrutura);
@@ -85,7 +95,6 @@ function IndexPage() {
 
     if (environment !== 'production') {
       console.log(result);
-      console.log(result.name);
     }
 
     if (
@@ -98,6 +107,100 @@ function IndexPage() {
       setMessageText('Ocorreu um erro ao realizar a cotação');
       setMessageType('error');
       setMessageTimeout(1000);
+    } else {
+      const {
+        kit,
+        parcelamento,
+      } = result;
+
+      kit.forEach(({
+        // custo,
+        garantia,
+        titulo,
+        qtde: quantidade,
+        url: urlImagem,
+      }) => {
+        equipamentos.push(
+          <Column
+            extraSmall={12}
+            medium={4}
+            large={2}
+          >
+            <Image
+              src={urlImagem}
+              caption={`${quantidade}x ${titulo}`}
+            />
+            {
+              garantia
+                ? (
+                  <Title
+                    type="h4"
+                    text={`Garantia: ${garantia} anos`}
+                  />
+                )
+                : ''
+            }
+          </Column>,
+        );
+      });
+
+      setValorTotal(`R$ ${(parcelamento[0].valor_minimo).toFixed(2).replace('.', ',')} a R$ ${(parcelamento[0].valor_maximo).toFixed(2).replace('.', ',')}`);
+
+      opcoesParcelas.push(
+        <Input
+          type="dropdown"
+          options={parcelamento.map(({
+            parcelas: qtdeParcelas,
+            taxa_maxima,
+            taxa_minina,
+            valor_maximo: valorMaximo,
+            valor_minimo: valorMinimo,
+          }) => ({
+            value: JSON.stringify({
+              parcelas: qtdeParcelas,
+              valorMinimo,
+              valorMaximo,
+            }),
+            text: `${qtdeParcelas} x de R$ ${valorMinimo.toFixed(2).replace('.', ',')} a R$ ${valorMaximo.toFixed(2).replace('.', ',')}`,
+          }))}
+          onChange={({ target: { value } }) => {
+            const {
+              parcelas: qtdeParcelas,
+              valorMinimo,
+              valorMaximo,
+            } = JSON.parse(value);
+
+            setParcelamentoSelecionado(qtdeParcelas);
+            setValorTotal(`R$ ${((qtdeParcelas * valorMinimo).toFixed(2)).replace('.', ',')} a R$ ${((qtdeParcelas * valorMaximo).toFixed(2)).replace('.', ',')}`);
+          }}
+        />,
+      );
+
+      setResultados(
+        <Grid>
+          <Row>
+            <Accordion
+              title="Instalação e suporte"
+            >
+              Mão de obra de uma empresa parceira
+            </Accordion>
+          </Row>
+          <Row>
+            <Accordion
+              title="Equipamentos com garantia"
+            >
+              {equipamentos}
+            </Accordion>
+          </Row>
+          <Row>
+            <Accordion
+              title="Parcelamento"
+            >
+              {opcoesParcelas}
+            </Accordion>
+          </Row>
+        </Grid>,
+      );
     }
   };
 
@@ -107,8 +210,9 @@ function IndexPage() {
         <Row>
           <Column extraSmall={12}>
             <Title
-              type="title"
+              type="subtitle"
               text="Faça sua cotação"
+              align="center"
             />
           </Column>
         </Row>
@@ -124,6 +228,24 @@ function IndexPage() {
             />
           </Column>
         </Row>
+        {
+          resultados || ''
+        }
+        {
+          resultados && valorTotal
+            ? (
+              <Row>
+                <Column extraSmall={12}>
+                  <Title
+                    type="h3"
+                    text={`Valor total do projeto: ${valorTotal}`}
+                    color={Colors.main}
+                  />
+                </Column>
+              </Row>
+            )
+            : ''
+        }
       </Grid>
     </Container>
   );

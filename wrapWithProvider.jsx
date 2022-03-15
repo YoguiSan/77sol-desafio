@@ -5,12 +5,9 @@ import Layout from './src/components/layout';
 
 function Wrapper({ element }) {
   return (
-    <>
-      <Layout>
-        {element}
-      </Layout>
-      )
-    </>
+    <Layout>
+      {element}
+    </Layout>
   );
 }
 
