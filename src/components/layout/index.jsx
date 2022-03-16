@@ -42,7 +42,7 @@ function Layout({ children }) {
             <TopMenu
               menuBorderBottom="none"
               menuItems={{
-                Visitar: 'https://www.77sol.com.br/',
+                Início: 'https://www.77sol.com.br/',
               }}
               menuItemWidth={10}
               unit="rem"

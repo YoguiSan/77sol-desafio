@@ -11,6 +11,7 @@ import {
   Card,
 } from 'pure-ui-react';
 
+import { replaceSpecialCharacters } from 'formatadores';
 import { environment } from '../Config';
 
 import SimuladorService from '../services/simulador';
@@ -18,7 +19,6 @@ import SimuladorService from '../services/simulador';
 import Container from './Styles';
 import AppContext from '../utils/Contexts';
 import { Colors } from '../assets/json';
-import { replaceSpecialCharacters } from 'formatadores';
 
 function IndexPage() {
   const {
@@ -77,7 +77,7 @@ function IndexPage() {
   }, {
     name: 'valorConta',
     type: 'number',
-    label: 'Valor médio da conta',
+    label: 'Valor da conta',
     value: valorConta,
     onChange: ({ target: { value } }) => setValorConta(value),
     required: true,
@@ -88,6 +88,8 @@ function IndexPage() {
     const equipamentos = [];
 
     const opcoesParcelas = [];
+
+    let total = 0;
 
     setLoading(true);
 
@@ -118,7 +120,6 @@ function IndexPage() {
       } = result;
 
       kit.forEach(({
-        // custo,
         garantia,
         titulo,
         qtde: quantidade,
@@ -148,7 +149,8 @@ function IndexPage() {
         );
       });
 
-      setValorTotal(`R$ ${(parcelamento[0].valor_minimo).toFixed(2).replace('.', ',')} a R$ ${(parcelamento[0].valor_maximo).toFixed(2).replace('.', ',')}`);
+      total = `R$ ${(parcelamento[0].valor_minimo).toFixed(2).replace('.', ',')} a R$ ${(parcelamento[0].valor_maximo).toFixed(2).replace('.', ',')}`;
+      setValorTotal(total);
 
       opcoesParcelas.push(
         <Input
@@ -174,8 +176,10 @@ function IndexPage() {
               valorMaximo,
             } = JSON.parse(value);
 
+            total = `R$ ${((qtdeParcelas * valorMinimo).toFixed(2)).replace('.', ',')} a R$ ${((qtdeParcelas * valorMaximo).toFixed(2)).replace('.', ',')}`;
+
             setParcelamentoSelecionado(qtdeParcelas);
-            setValorTotal(`R$ ${((qtdeParcelas * valorMinimo).toFixed(2)).replace('.', ',')} a R$ ${((qtdeParcelas * valorMaximo).toFixed(2)).replace('.', ',')}`);
+            setValorTotal(total);
           }}
         />,
       );
@@ -186,8 +190,17 @@ function IndexPage() {
             <Column extraSmall={12}>
               <Title
                 type="h3"
-                text={`Potencial: ${potencial}`}
-                classes={[replaceSpecialCharacters(potencial).toLowerCase()]}
+                text={(
+                  <>
+                    Potencial:
+                    {' '}
+                    <b
+                      className={[replaceSpecialCharacters(potencial).toLowerCase()]}
+                    >
+                      {potencial}
+                    </b>
+                  </>
+                )}
               />
             </Column>
           </Row>
@@ -207,7 +220,7 @@ function IndexPage() {
           </Row>
           <Row>
             <Accordion
-              title="Parcelamento"
+              title="Pagamento e parcelamento"
             >
               {opcoesParcelas}
             </Accordion>
@@ -245,12 +258,19 @@ function IndexPage() {
           resultados || ''
         }
         {
-          resultados && valorTotal
+          valorTotal
             ? (
               <Row>
                 <Column extraSmall={12}>
-                  <Card
-                    title={`Valor total do projeto: ${valorTotal}`}
+                  <Title
+                    type="h3"
+                    text={(
+                      <p className="valor-total">
+                        Valor total do projeto:
+                        {' '}
+                        {valorTotal}
+                      </p>
+                    )}
                   />
                 </Column>
               </Row>
